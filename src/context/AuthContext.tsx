@@ -30,18 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setAuthState(state);
       if (state.status === 'signed_in' && state.userId) {
         globalSyncEngine.setUserId(state.userId);
-
-        // Check if first-run linking modal needs to be displayed
-        const hasCompletedLinking = localStorage.getItem(`${FIRST_RUN_COMPLETED_KEY}_${state.userId}`);
-        const currentState = StorageService.loadState();
-        const hasLocalData = (currentState.transactions?.length || 0) > 0 || (currentState.accounts?.length || 0) > 0;
-
-        if (!hasCompletedLinking && hasLocalData) {
-          setShowFirstRunModal(true);
-        } else {
-          // Normal background sync
-          globalSyncEngine.syncNow();
-        }
+        globalSyncEngine.syncNow();
       } else {
         globalSyncEngine.setUserId(null);
         setShowFirstRunModal(false);

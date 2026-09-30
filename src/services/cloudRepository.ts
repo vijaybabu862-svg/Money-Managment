@@ -9,6 +9,7 @@ import {
   query,
   orderBy,
   limit,
+  onSnapshot,
 } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from './firebase';
 import { AppState } from './storage';
@@ -302,6 +303,82 @@ export const CloudRepository = {
       return { success: true };
     } catch (err) {
       return { success: false, error: parseFirebaseError(err) };
+    }
+  },
+
+  /**
+   * Saves the complete financial AppState under users/{userId}/appState/current
+   * Includes deviceId to prevent echo updates on the originating device
+   */
+  async saveAppStateToCloud(
+    userId: string,
+    state: AppState,
+    deviceId?: string
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!isFirebaseConfigured() || !db) {
+      return { success: false, error: 'Firebase not configured.' };
+    }
+    try {
+      const docRef = doc(db, 'users', userId, 'appState', 'current');
+      const sanitized = JSON.parse(JSON.stringify(state));
+      await setDoc(docRef, {
+        state: sanitized,
+        deviceId: deviceId || 'unknown',
+        updatedAt: new Date().toISOString(),
+        _schemaVersion: SCHEMA_VERSION,
+      });
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: parseFirebaseError(err) };
+    }
+  },
+
+  /**
+   * Fetches the complete financial AppState from users/{userId}/appState/current
+   */
+  async fetchAppStateFromCloud(
+    userId: string
+  ): Promise<{ success: boolean; state?: AppState; error?: string }> {
+    if (!isFirebaseConfigured() || !db) {
+      return { success: false, error: 'Firebase not configured.' };
+    }
+    try {
+      const docRef = doc(db, 'users', userId, 'appState', 'current');
+      const snap = await getDoc(docRef);
+      if (snap && snap.exists()) {
+        const data = snap.data();
+        if (data && data.state) {
+          return { success: true, state: data.state as AppState };
+        }
+      }
+      return { success: false, error: 'No cloud state found.' };
+    } catch (err) {
+      return { success: false, error: parseFirebaseError(err) };
+    }
+  },
+
+  /**
+   * Realtime Firestore listener: fires instantly when another device modifies state
+   */
+  subscribeToCloudAppState(
+    userId: string,
+    onUpdate: (state: AppState, fromDeviceId: string) => void
+  ): () => void {
+    if (!isFirebaseConfigured() || !db) return () => {};
+    try {
+      const docRef = doc(db, 'users', userId, 'appState', 'current');
+      return onSnapshot(docRef, (snap) => {
+        if (snap && snap.exists()) {
+          const data = snap.data();
+          if (data && data.state) {
+            onUpdate(data.state as AppState, data.deviceId || '');
+          }
+        }
+      }, (err) => {
+        console.warn('[CloudRepository] Realtime snapshot listener error:', err);
+      });
+    } catch {
+      return () => {};
     }
   },
 };

@@ -65,7 +65,21 @@ export const AuthService = {
         return { success: true, user: authState };
       } catch (err: any) {
         console.error('[AuthService] Google Sign-In failed:', err);
-        return { success: false, error: err.message || 'Google sign-in was cancelled or blocked.' };
+        const code = err.code || '';
+        const msg = err.message || '';
+        if (code === 'auth/unauthorized-domain' || msg.includes('unauthorized-domain')) {
+          return {
+            success: false,
+            error: 'Domain not authorized in Firebase. Add your Vercel URL in Firebase Console → Authentication → Settings → Authorized domains.',
+          };
+        }
+        if (code === 'auth/popup-closed-by-user') {
+          return { success: false, error: 'Sign-in window was closed before completing.' };
+        }
+        if (code === 'auth/popup-blocked') {
+          return { success: false, error: 'Sign-in popup was blocked by your browser. Please allow popups.' };
+        }
+        return { success: false, error: msg || 'Google sign-in was cancelled or failed.' };
       }
     } else {
       // Offline/Local development simulated sign-in

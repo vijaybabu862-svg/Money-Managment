@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, useRef } from 'react';
 import {
   Account,
   Budget,
@@ -75,7 +75,8 @@ import { globalSyncEngine } from '../services/syncEngine';
 import { enqueueSyncMutation, getPendingQueueCount, clearCompletedAndFailedQueue } from '../services/syncQueue';
 import { loadStoredConflicts, resolveSyncConflict, saveStoredConflicts } from '../services/conflictResolver';
 import { CloudRepository } from '../services/cloudRepository';
-import { getLocalKnownDevices, setDeviceFriendlyName } from '../services/deviceService';
+import { getLocalKnownDevices, setDeviceFriendlyName, getOrCreateDeviceId } from '../services/deviceService';
+import { AuthService } from '../services/authService';
 import { THEME_STORAGE_KEY } from './ThemeContext';
 
 import { createAuditEvent, appendAuditEventWithRetention } from '../services/auditService';
@@ -352,10 +353,82 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(() => StorageService.loadState());
+  const isRemoteUpdateRef = useRef<boolean>(false);
+  const currentUserIdRef = useRef<string | null>(null);
 
-  // Save changes to storage
+  // Subscribe to Authentication and Cloud Realtime State
+  useEffect(() => {
+    let unsubscribeSnapshot: (() => void) | null = null;
+
+    const unsubscribeAuth = AuthService.subscribeToAuthChanges(async (auth) => {
+      const uid = auth.status === 'signed_in' && auth.userId ? auth.userId : null;
+      currentUserIdRef.current = uid;
+
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
+      if (uid) {
+        const myDeviceId = getOrCreateDeviceId();
+
+        // 1. Initial Cloud State Pull on Login
+        try {
+          const cloudRes = await CloudRepository.fetchAppStateFromCloud(uid);
+          if (cloudRes.success && cloudRes.state) {
+            isRemoteUpdateRef.current = true;
+            setState(cloudRes.state);
+            StorageService.saveState(cloudRes.state);
+          } else {
+            // No cloud state yet, upload current local state to initialize cloud
+            const currentState = StorageService.loadState();
+            await CloudRepository.saveAppStateToCloud(uid, currentState, myDeviceId);
+          }
+        } catch (err) {
+          console.warn('[FinanceContext] Initial cloud sync check error:', err);
+        }
+
+        // 2. Realtime listener: triggers instantly when another device modifies state
+        unsubscribeSnapshot = CloudRepository.subscribeToCloudAppState(uid, (remoteState, fromDeviceId) => {
+          if (fromDeviceId !== myDeviceId && remoteState) {
+            isRemoteUpdateRef.current = true;
+            setState(remoteState);
+            StorageService.saveState(remoteState);
+          }
+        });
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+      }
+    };
+  }, []);
+
+  // Save changes to storage and auto-push to cloud in background
   useEffect(() => {
     StorageService.saveState(state);
+
+    if (isRemoteUpdateRef.current) {
+      isRemoteUpdateRef.current = false;
+      return;
+    }
+
+    const uid = currentUserIdRef.current || globalSyncEngine.getUserId();
+    if (uid) {
+      const timer = setTimeout(async () => {
+        try {
+          const myDeviceId = getOrCreateDeviceId();
+          await CloudRepository.saveAppStateToCloud(uid, state, myDeviceId);
+        } catch (err) {
+          console.warn('[FinanceContext] Auto-push to cloud error:', err);
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
   }, [state]);
 
   // Derived financial computations using the central calculation engine
@@ -2349,6 +2422,11 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const triggerSyncNow = async () => {
+    const uid = currentUserIdRef.current || globalSyncEngine.getUserId();
+    const myDeviceId = getOrCreateDeviceId();
+    if (uid) {
+      await CloudRepository.saveAppStateToCloud(uid, state, myDeviceId);
+    }
     const res = await globalSyncEngine.syncNow(state);
     setPendingSyncCount(getPendingQueueCount());
     setSyncConflicts(loadStoredConflicts());
