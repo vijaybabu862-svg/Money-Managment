@@ -1,12 +1,12 @@
 {
-  "projectId": "graphic-badge-g6shk",
-  "appId": "1:1057452903612:web:3e5ea1ff3a28aa009594b9",
-  "apiKey": "AIzaSyAWHHO3odKNZB4Xd57vVxg_FTpwkFpG7_4",
-  "authDomain": "graphic-badge-g6shk.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-cashflow-2d092c09-2ebd-4665-a3f7-f5088f8c860c",
-  "storageBucket": "graphic-badge-g6shk.firebasestorage.app",
-  "messagingSenderId": "1057452903612",
-  "measurementId": "",
-  "oAuthClientId": "1057452903612-m1q34e04ag41lfn41dustf627t8921ul.apps.googleusercontent.com",
+  "projectId": "my-cashflow-app-8886565",
+  "appId": "1:578403616787:web:d9493e2ea3cd06b71ed7e6",
+  "apiKey": "AIzaSyC7lqjPoWydYJgLUKWMDRnxVQbT5_K1JN8",
+  "authDomain": "my-cashflow-app-8886565.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "my-cashflow-app-8886565.firebasestorage.app",
+  "messagingSenderId": "578403616787",
+  "measurementId": "G-X8GL33B544",
+  "oAuthClientId": "",
   "recaptchaSiteKey": ""
 }

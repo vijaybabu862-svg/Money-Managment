@@ -69,7 +69,7 @@ async function testFirestoreConnection() {
   }
 }
 
-if (db) {
+if (db && typeof window !== 'undefined') {
   testFirestoreConnection().catch(() => {});
 }
 
