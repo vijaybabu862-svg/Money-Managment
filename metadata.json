@@ -1,0 +1,6 @@
+{
+  "name": "Cash Flow",
+  "description": "Production-quality personal financial management web application for tracking loans, salary EMIs, Swiggy delivery earnings, expenses, and cash flow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22C55E" />
+      <stop offset="100%" stop-color="#16A34A" />
+    </linearGradient>
+  </defs>
+  <!-- Background with subtle rounded corners for standard view -->
+  <rect width="512" height="512" rx="104" fill="url(#bgGrad)" />
+  
+  <!-- Subtle inner ambient ring -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#334155" stroke-width="4" stroke-opacity="0.4" />
+  
+  <!-- Rupee Symbol + Flow Arrow Geometry -->
+  <g transform="translate(136, 120)">
+    <!-- Rupee Top Bar -->
+    <rect x="20" y="24" width="180" height="24" rx="12" fill="#FFFFFF" />
+    <!-- Rupee Second Bar -->
+    <rect x="20" y="80" width="180" height="24" rx="12" fill="#FFFFFF" />
+    <!-- Rupee Spine -->
+    <rect x="20" y="24" width="24" height="240" rx="12" fill="#FFFFFF" />
+    <!-- Upper loop arc -->
+    <path d="M 44 24 C 150 24, 150 148, 44 148" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+    <!-- Slash leg turning into forward flow -->
+    <path d="M 38 140 L 160 270" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+    
+    <!-- Dynamic Cash Flow Arrow in Emerald -->
+    <path d="M 120 220 L 210 130 L 175 130 M 210 130 L 210 165" fill="none" stroke="url(#accentGrad)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="210" cy="130" r="10" fill="#22C55E" />
+  </g>
+</svg>

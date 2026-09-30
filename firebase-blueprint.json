@@ -1,0 +1,215 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User account profile and settings",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "currency": { "type": "string" },
+        "locale": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "email"]
+    },
+    "Account": {
+      "title": "Financial Account",
+      "description": "Bank account, credit card, cash wallet, or savings account",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "currentBalance": { "type": "number" },
+        "openingBalance": { "type": "number" },
+        "bankName": { "type": "string" },
+        "accountNumberMasked": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "Transaction": {
+      "title": "Financial Transaction",
+      "description": "Income, expense, transfer, or debt payment transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string" },
+        "date": { "type": "string" },
+        "accountId": { "type": "string" },
+        "toAccountId": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "debtId": { "type": "string" },
+        "description": { "type": "string" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "amount", "type", "date", "accountId"]
+    },
+    "Debt": {
+      "title": "Debt / Liability",
+      "description": "Personal loan, credit card debt, or vehicle loan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "debtType": { "type": "string" },
+        "outstandingPrincipal": { "type": "number" },
+        "interestRate": { "type": "number" },
+        "monthlyEmi": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "outstandingPrincipal"]
+    },
+    "Payment": {
+      "title": "Payment Commitment",
+      "description": "Scheduled bill or loan payment obligation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "amount": { "type": "number" },
+        "dueDate": { "type": "string" },
+        "status": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "amount", "dueDate"]
+    },
+    "Goal": {
+      "title": "Financial Goal",
+      "description": "Savings or emergency fund target",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "targetAmount": { "type": "number" },
+        "currentAmount": { "type": "number" },
+        "status": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "targetAmount"]
+    },
+    "Device": {
+      "title": "Registered Device",
+      "description": "Device authorized to sync user financial records",
+      "type": "object",
+      "properties": {
+        "deviceId": { "type": "string" },
+        "name": { "type": "string" },
+        "platform": { "type": "string" },
+        "browser": { "type": "string" },
+        "firstSeenAt": { "type": "string" },
+        "lastActiveAt": { "type": "string" },
+        "lastSyncAt": { "type": "string" },
+        "appVersion": { "type": "string" }
+      },
+      "required": ["deviceId", "name", "platform"]
+    },
+    "SyncConflict": {
+      "title": "Sync Conflict Record",
+      "description": "Concurrent multi-device edit requiring user resolution",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "status": { "type": "string" },
+        "detectedAt": { "type": "string" }
+      },
+      "required": ["id", "entityType", "entityId", "status"]
+    },
+    "SwiggyShift": {
+      "title": "Swiggy Delivery Shift",
+      "description": "Daily delivery shift with gross earnings, fuel and work expenses, and net take-home",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "slot": { "type": "string" },
+        "status": { "type": "string" },
+        "orders": { "type": "number" },
+        "grossEarnings": { "type": "number" },
+        "fuelExpense": { "type": "number" },
+        "otherExpenses": { "type": "number" },
+        "netEarnings": { "type": "number" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "date", "grossEarnings", "netEarnings"]
+    },
+    "EssentialExpense": {
+      "title": "Essential Living Expense",
+      "description": "Monthly recurring essential expense (Rent, Utilities, Food, Groceries)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "amount": { "type": "number" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "amount"]
+    },
+    "SalarySetting": {
+      "title": "Salary Configuration",
+      "description": "Baseline monthly company salary and currency settings",
+      "type": "object",
+      "properties": {
+        "monthlySalary": { "type": "number" },
+        "currency": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["monthlySalary"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user document storing profile and sync metadata"
+    },
+    "/users/{userId}/accounts/{accountId}": {
+      "schema": "Account",
+      "description": "User accounts collection"
+    },
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "User transactions collection"
+    },
+    "/users/{userId}/debts/{debtId}": {
+      "schema": "Debt",
+      "description": "User debts and loans collection"
+    },
+    "/users/{userId}/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "User payments collection"
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "User goals collection"
+    },
+    "/users/{userId}/swiggy/{shiftId}": {
+      "schema": "SwiggyShift",
+      "description": "User Swiggy delivery shifts collection"
+    },
+    "/users/{userId}/expenses/{expenseId}": {
+      "schema": "EssentialExpense",
+      "description": "User essential household expenses collection"
+    },
+    "/users/{userId}/salary/{settingId}": {
+      "schema": "SalarySetting",
+      "description": "User monthly salary configuration document"
+    },
+    "/users/{userId}/devices/{deviceId}": {
+      "schema": "Device",
+      "description": "User registered devices collection"
+    },
+    "/users/{userId}/conflicts/{conflictId}": {
+      "schema": "SyncConflict",
+      "description": "User sync conflicts collection"
+    }
+  }
+}

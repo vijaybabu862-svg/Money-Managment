@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Health check collection for connection verification
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // CASH FLOW — User Data Isolation
+    // Every cloud record must strictly belong to the authenticated user (UID).
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Explicitly scoped subcollections
+      match /accounts/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /transactions/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /debts/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /payments/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /budgets/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /goals/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /swiggy/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /expenses/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /salary/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /smsCandidates/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /notifications/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /audit/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /settings/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /devices/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /conflicts/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+      match /backups/{id} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+
+      match /{allChildren=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Strictly deny any unexpected root collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
