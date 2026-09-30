@@ -43,7 +43,7 @@ export const SalaryPage: React.FC = () => {
   } = centralPosition;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -83,7 +83,7 @@ export const SalaryPage: React.FC = () => {
       {isEditing && (
         <form
           onSubmit={handleSaveSalary}
-          className="p-5 rounded-2xl bg-white dark:bg-[#131926] border border-blue-200 dark:border-blue-900/60 shadow-xs space-y-4"
+          className="p-5 rounded-2xl bg-white dark:bg-[#131926] border border-blue-200 dark:border-blue-900/60 shadow-xs space-y-4 animate-fade-in"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -122,7 +122,7 @@ export const SalaryPage: React.FC = () => {
       {/* Primary 3-Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Monthly Salary */}
-        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs hover-lift">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Monthly Salary
@@ -138,7 +138,7 @@ export const SalaryPage: React.FC = () => {
         </div>
 
         {/* Total Monthly EMI */}
-        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-5 shadow-xs hover-lift">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
               Total Monthly EMI
@@ -154,7 +154,7 @@ export const SalaryPage: React.FC = () => {
         </div>
 
         {/* Salary Remaining */}
-        <div className={`bg-white dark:bg-[#131926] border rounded-2xl p-5 shadow-xs ${
+        <div className={`bg-white dark:bg-[#131926] border rounded-2xl p-5 shadow-xs hover-lift ${
           salaryRemainingAfterEMI >= 0
             ? 'border-emerald-200 dark:border-emerald-900/50'
             : 'border-red-300 dark:border-red-900/70'

@@ -148,7 +148,7 @@ export const SwiggyPage: React.FC = () => {
   const formNet = formGross - formExp;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -173,7 +173,7 @@ export const SwiggyPage: React.FC = () => {
       </div>
 
       {/* Monthly Summary Card Box */}
-      <div className="bg-white dark:bg-[#131926] border border-orange-200 dark:border-orange-900/60 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="bg-white dark:bg-[#131926] border border-orange-200 dark:border-orange-900/60 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 hover-lift">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
           <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
             Swiggy This Month Summary

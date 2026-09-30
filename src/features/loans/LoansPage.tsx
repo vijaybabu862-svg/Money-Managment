@@ -165,7 +165,7 @@ export const LoansPage: React.FC = () => {
   } = centralPosition;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -189,7 +189,7 @@ export const LoansPage: React.FC = () => {
       {/* Top 4-Metric Summary Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {/* Active Loans */}
-        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs hover-lift">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Active Loans
           </span>
@@ -202,7 +202,7 @@ export const LoansPage: React.FC = () => {
         </div>
 
         {/* Total Outstanding */}
-        <div className="bg-white dark:bg-[#131926] border border-amber-200 dark:border-amber-900/50 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-amber-200 dark:border-amber-900/50 rounded-2xl p-4 shadow-xs hover-lift">
           <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
             Total Outstanding
           </span>
@@ -215,7 +215,7 @@ export const LoansPage: React.FC = () => {
         </div>
 
         {/* Total Monthly EMI */}
-        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4 shadow-xs hover-lift">
           <span className="text-[11px] font-bold uppercase tracking-wider text-rose-500">
             Total Monthly EMI
           </span>
@@ -228,7 +228,7 @@ export const LoansPage: React.FC = () => {
         </div>
 
         {/* EMI / Salary */}
-        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs hover-lift">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             EMI / Salary
           </span>

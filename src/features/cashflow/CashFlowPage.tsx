@@ -33,7 +33,7 @@ export const CashFlowPage: React.FC = () => {
   } = centralPosition;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -46,7 +46,7 @@ export const CashFlowPage: React.FC = () => {
 
       {/* FINAL RESULT CARD - PROMINENT & UNAMBIGUOUS */}
       <div
-        className={`p-6 rounded-2xl border shadow-sm transition-all ${
+        className={`p-6 rounded-2xl border shadow-sm transition-all hover-lift ${
           isShortfall
             ? 'bg-rose-50/70 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60'
             : 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/60'

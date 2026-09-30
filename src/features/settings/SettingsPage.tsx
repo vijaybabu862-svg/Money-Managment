@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../../context/AuthContext';
 import { formatINR } from '../../utils/currency';
 import {
   Settings,
@@ -15,6 +16,12 @@ import {
   ShieldAlert,
   Eraser,
   Loader2,
+  Cloud,
+  CloudOff,
+  LogIn,
+  LogOut,
+  User,
+  RefreshCw,
 } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
@@ -26,11 +33,14 @@ export const SettingsPage: React.FC = () => {
     safeDeleteFinancialData,
     factoryReset,
     removeDemoData,
+    triggerSyncNow,
   } = useFinance();
   const { showToast } = useToast();
+  const { authState, loginWithGoogle, logout, isConfigured } = useAuth();
 
   const [salaryInput, setSalaryInput] = useState(String(centralPosition.monthlySalary));
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [resetConfirmInput, setResetConfirmInput] = useState('');
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
@@ -91,6 +101,46 @@ export const SettingsPage: React.FC = () => {
     };
     reader.readAsText(file);
     e.target.value = '';
+  };
+
+  const handleSignIn = async () => {
+    try {
+      const res = await loginWithGoogle();
+      if (res.success) {
+        showToast('✓ Signed in with Google! Multi-device sync active.');
+      } else if (res.error) {
+        showToast(`Sign in error: ${res.error}`, 'error');
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Sign in failed';
+      showToast(`Sign in failed: ${msg}`, 'error');
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      showToast('Signed out of cloud account');
+    } catch (err) {
+      showToast('Failed to sign out', 'error');
+    }
+  };
+
+  const handleSyncNow = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    try {
+      const res = await triggerSyncNow();
+      if (res.success) {
+        showToast(`✓ Cloud sync completed (${res.syncedItemsCount} records updated)`);
+      } else {
+        showToast(res.error || 'Sync encountered an issue', 'error');
+      }
+    } catch (err) {
+      showToast('Sync failed', 'error');
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const handleConfirmAction = async () => {
@@ -165,7 +215,7 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
@@ -175,6 +225,91 @@ export const SettingsPage: React.FC = () => {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Simple system settings, salary configuration, and data backup controls
         </p>
+      </div>
+
+      {/* Cloud Database & Multi-Device Sync */}
+      <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-4 hover-lift">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Cloud className="w-5 h-5 text-blue-500" />
+              <span>Cloud Database & Multi-Device Sync</span>
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Connect your Google Account to synchronize your loans, salary, shifts, and expenses across all your phones, laptops, and tablets.
+            </p>
+          </div>
+
+          <div>
+            {authState.status === 'signed_in' ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Live Cloud Sync Active
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                <CloudOff className="w-3.5 h-3.5" />
+                Device-Only (Offline)
+              </span>
+            )}
+          </div>
+        </div>
+
+        {authState.status === 'signed_in' ? (
+          <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm">
+                {authState.displayName?.[0] || authState.email?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                  {authState.displayName || 'Google Account Connected'}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {authState.email}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleSyncNow}
+                disabled={isSyncing}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? 'Syncing...' : 'Sync Now'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/50 dark:bg-rose-950/30 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-100/50 transition cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="text-xs text-slate-600 dark:text-slate-400 max-w-lg">
+                You are currently in local storage mode. To view and edit your finances on multiple devices at the same time, sign in with your Google account.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSignIn}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs cursor-pointer shrink-0"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In with Google</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 1. Salary Settings */}

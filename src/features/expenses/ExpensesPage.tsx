@@ -112,7 +112,7 @@ export const ExpensesPage: React.FC = () => {
   const totalExpenses = centralPosition.totalEssentialExpenses;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -134,7 +134,7 @@ export const ExpensesPage: React.FC = () => {
       </div>
 
       {/* Summary Banner */}
-      <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover-lift">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
             Total Monthly Essential Expenses

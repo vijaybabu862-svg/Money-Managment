@@ -38,26 +38,33 @@ export const Dashboard: React.FC = () => {
   } = centralPosition;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in">
       {/* Brand Header */}
-      <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          CASH FLOW
-        </h1>
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-          Know your money. Control your debt.
-        </p>
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            CASH FLOW
+          </h1>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+            Know your money. Control your debt.
+          </p>
+        </div>
       </div>
 
       {/* 3 Core Overview Blocks: Income, Debt, Monthly Position */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* BLOCK 1: INCOME */}
-        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#131926] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover-lift">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Monthly Income
-              </span>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Monthly Income
+                </span>
+              </div>
               <Link
                 to="/salary"
                 className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
@@ -99,12 +106,17 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* BLOCK 2: DEBT */}
-        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#131926] border border-rose-200 dark:border-rose-900/50 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover-lift">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-xs font-bold uppercase tracking-wider text-rose-500">
-                Debt & Loans
-              </span>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                  <CreditCard className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                  Debt & Loans
+                </span>
+              </div>
               <Link
                 to="/loans"
                 className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-0.5"
@@ -154,7 +166,7 @@ export const Dashboard: React.FC = () => {
 
         {/* BLOCK 3: MONTHLY POSITION */}
         <div
-          className={`border rounded-2xl p-5 shadow-xs flex flex-col justify-between ${
+          className={`border rounded-2xl p-5 shadow-xs flex flex-col justify-between hover-lift ${
             isShortfall
               ? 'bg-rose-50/50 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/60'
               : 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/60'
@@ -162,13 +174,24 @@ export const Dashboard: React.FC = () => {
         >
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-200/60 dark:border-slate-800">
-              <span
-                className={`text-xs font-bold uppercase tracking-wider ${
-                  isShortfall ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
-                }`}
-              >
-                Monthly Cash Position
-              </span>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                    isShortfall
+                      ? 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300'
+                      : 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
+                  }`}
+                >
+                  <Wallet className="w-3.5 h-3.5" />
+                </div>
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${
+                    isShortfall ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'
+                  }`}
+                >
+                  Monthly Cash Position
+                </span>
+              </div>
               <Link
                 to="/cash-flow"
                 className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
@@ -181,19 +204,19 @@ export const Dashboard: React.FC = () => {
             <div className="mt-4 space-y-2 text-xs">
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>Salary</span>
-                <span className="font-semibold">{formatINR(monthlySalary)}</span>
+                <span className="font-semibold tabular-nums">{formatINR(monthlySalary)}</span>
               </div>
               <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
                 <span>+ Swiggy Net</span>
-                <span className="font-semibold">+{formatINR(swiggyNetIncome)}</span>
+                <span className="font-semibold tabular-nums">+{formatINR(swiggyNetIncome)}</span>
               </div>
               <div className="flex justify-between text-rose-600 dark:text-rose-400">
                 <span>− Total EMI</span>
-                <span className="font-semibold">−{formatINR(totalMonthlyEMI)}</span>
+                <span className="font-semibold tabular-nums">−{formatINR(totalMonthlyEMI)}</span>
               </div>
               <div className="flex justify-between text-rose-600 dark:text-rose-400">
                 <span>− Essential Expenses</span>
-                <span className="font-semibold">−{formatINR(totalEssentialExpenses)}</span>
+                <span className="font-semibold tabular-nums">−{formatINR(totalEssentialExpenses)}</span>
               </div>
 
               <div className="pt-2 border-t border-slate-300 dark:border-slate-700">
@@ -286,7 +309,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* SECTION: SWIGGY SUMMARY */}
-      <div className="bg-white dark:bg-[#131926] border border-orange-200 dark:border-orange-900/60 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-[#131926] border border-orange-200 dark:border-orange-900/60 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover-lift">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Bike className="w-5 h-5 text-orange-600 dark:text-orange-400" />
