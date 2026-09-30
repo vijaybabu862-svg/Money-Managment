@@ -43,10 +43,12 @@ export const SwiggyPage: React.FC = () => {
   const [otherExpenses, setOtherExpenses] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Sort shifts desc
-  const allShifts = [...(state.swiggyShifts || [])].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  // Sort shifts desc safely
+  const allShifts = [...(state.swiggyShifts || [])].sort((a, b) => {
+    const timeA = a.date ? new Date(a.date.includes('T') ? a.date.split('T')[0] : a.date).getTime() : 0;
+    const timeB = b.date ? new Date(b.date.includes('T') ? b.date.split('T')[0] : b.date).getTime() : 0;
+    return (isNaN(timeB) ? 0 : timeB) - (isNaN(timeA) ? 0 : timeA);
+  });
 
   const handleOpenAdd = () => {
     setEditingShift(null);

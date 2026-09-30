@@ -26,10 +26,11 @@ export function formatIndianDate(
   dateStr: string,
   options?: { includeYear?: boolean; relative?: boolean }
 ): string {
-  if (!dateStr) return '';
+  if (!dateStr || typeof dateStr !== 'string') return '';
   const { includeYear = true, relative = false } = options || {};
 
-  const targetDate = new Date(dateStr + 'T00:00:00');
+  const cleanDateStr = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+  const targetDate = new Date(cleanDateStr + 'T00:00:00');
   if (isNaN(targetDate.getTime())) return dateStr;
 
   if (relative) {

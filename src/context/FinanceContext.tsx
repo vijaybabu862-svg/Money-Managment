@@ -1122,8 +1122,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const newTransactions: Transaction[] = [];
 
     if (normalized.status === 'COMPLETED' && normalized.grossEarnings > 0) {
-      const bankAccount = state.accounts.find((a) => a.type === 'BANK' && a.isActive) || state.accounts[0];
-      const swiggyCategory = state.categories.find((c) => c.name.toLowerCase().includes('swiggy')) || state.categories[0];
+      const bankAccount = (state.accounts || []).find((a) => a.type === 'BANK' && a.isActive) || (state.accounts || [])[0];
+      const swiggyCategory = (state.categories || []).find((c) => c.name.toLowerCase().includes('swiggy')) || (state.categories || [])[0];
       const incomeTxId = `tx_inc_${shiftId}`;
       normalized.linkedIncomeTxId = incomeTxId;
 
@@ -1132,7 +1132,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         date: normalized.date,
         amount: normalized.grossEarnings,
         type: 'INCOME',
-        accountId: bankAccount ? bankAccount.id : state.accounts[0].id,
+        accountId: bankAccount?.id || (state.accounts && state.accounts[0]?.id) || 'acc_default',
         categoryId: swiggyCategory?.id || 'cat_swiggy_inc',
         description: `Swiggy Delivery: ${normalized.slot} (${normalized.orders} orders)`,
         notes: `Base ₹${normalized.basePay} + Surge ₹${normalized.surgeIncentives} + Tips ₹${normalized.tips}. ${normalized.notes || ''}`.trim(),
@@ -1143,8 +1143,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       });
 
       if (normalized.fuelExpense > 0) {
-        const cashAccount = state.accounts.find((a) => a.type === 'CASH' && a.isActive) || bankAccount;
-        const fuelCategory = state.categories.find((c) => c.id === 'cat_fuel' || c.name.toLowerCase().includes('fuel')) || state.categories[0];
+        const cashAccount = (state.accounts || []).find((a) => a.type === 'CASH' && a.isActive) || bankAccount;
+        const fuelCategory = (state.categories || []).find((c) => c.id === 'cat_fuel' || c.name.toLowerCase().includes('fuel')) || (state.categories || [])[0];
         const fuelTxId = `tx_fuel_${shiftId}`;
         normalized.linkedFuelTxId = fuelTxId;
 
@@ -1153,8 +1153,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           date: normalized.date,
           amount: normalized.fuelExpense,
           type: 'EXPENSE',
-          accountId: cashAccount.id,
-          categoryId: fuelCategory.id,
+          accountId: cashAccount?.id || bankAccount?.id || (state.accounts && state.accounts[0]?.id) || 'acc_cash',
+          categoryId: fuelCategory?.id || 'cat_fuel',
           description: `Shift Fuel: ${normalized.kmDriven || 0} km (${normalized.fuelLitres || 0}L)`,
           notes: `Operational fuel cost for Swiggy shift on ${normalized.date}`,
           source: 'MANUAL',
@@ -1190,8 +1190,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       let transactions = [...prev.transactions];
 
       if (normalized.status === 'COMPLETED' && normalized.grossEarnings > 0) {
-        const bankAccount = prev.accounts.find((a) => a.type === 'BANK' && a.isActive) || prev.accounts[0];
-        const swiggyCategory = prev.categories.find((c) => c.name.toLowerCase().includes('swiggy')) || prev.categories[0];
+        const bankAccount = (prev.accounts || []).find((a) => a.type === 'BANK' && a.isActive) || (prev.accounts || [])[0];
+        const swiggyCategory = (prev.categories || []).find((c) => c.name.toLowerCase().includes('swiggy')) || (prev.categories || [])[0];
         const now = new Date().toISOString();
 
         if (normalized.linkedIncomeTxId) {
@@ -1215,7 +1215,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             date: normalized.date,
             amount: normalized.grossEarnings,
             type: 'INCOME',
-            accountId: bankAccount ? bankAccount.id : prev.accounts[0].id,
+            accountId: bankAccount?.id || (prev.accounts && prev.accounts[0]?.id) || 'acc_default',
             categoryId: swiggyCategory?.id || 'cat_swiggy_inc',
             description: `Swiggy Delivery: ${normalized.slot} (${normalized.orders} orders)`,
             notes: `Base ₹${normalized.basePay} + Surge ₹${normalized.surgeIncentives} + Tips ₹${normalized.tips}. ${normalized.notes || ''}`.trim(),
@@ -1227,8 +1227,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
 
         if (normalized.fuelExpense > 0) {
-          const cashAccount = prev.accounts.find((a) => a.type === 'CASH' && a.isActive) || bankAccount;
-          const fuelCategory = prev.categories.find((c) => c.id === 'cat_fuel' || c.name.toLowerCase().includes('fuel')) || prev.categories[0];
+          const cashAccount = (prev.accounts || []).find((a) => a.type === 'CASH' && a.isActive) || bankAccount;
+          const fuelCategory = (prev.categories || []).find((c) => c.id === 'cat_fuel' || c.name.toLowerCase().includes('fuel')) || (prev.categories || [])[0];
 
           if (normalized.linkedFuelTxId) {
             transactions = transactions.map((t) =>
@@ -1250,8 +1250,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
               date: normalized.date,
               amount: normalized.fuelExpense,
               type: 'EXPENSE',
-              accountId: cashAccount.id,
-              categoryId: fuelCategory.id,
+              accountId: cashAccount?.id || bankAccount?.id || (prev.accounts && prev.accounts[0]?.id) || 'acc_cash',
+              categoryId: fuelCategory?.id || 'cat_fuel',
               description: `Shift Fuel: ${normalized.kmDriven || 0} km (${normalized.fuelLitres || 0}L)`,
               notes: `Operational fuel cost for Swiggy shift on ${normalized.date}`,
               source: 'MANUAL',
